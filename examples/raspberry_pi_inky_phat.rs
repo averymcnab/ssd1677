@@ -30,6 +30,13 @@ use std::{fs, io};
 const ROWS: u16 = 212;
 const COLS: u8 = 104;
 
+const busy_pin: u64 = 0;
+const reset_pin: u64 = 1;
+const dc_pin: u64 = 2;
+const cs_pin: u64 = 3;
+
+const spi_port: &str = "/dev/spidev0.0";
+
 #[rustfmt::skip]
 const LUT: [u8; 70] = [
     // Phase 0     Phase 1     Phase 2     Phase 3     Phase 4     Phase 5     Phase 6
@@ -53,7 +60,7 @@ const LUT: [u8; 70] = [
 
 fn main() -> Result<(), std::io::Error> {
     // Configure SPI
-    let mut spi = Spidev::open("/dev/spidev0.0").expect("SPI device");
+    let mut spi = Spidev::open(spi_port).expect("SPI device");
     let options = SpidevOptions::new()
         .bits_per_word(8)
         .max_speed_hz(4_000_000)
@@ -63,24 +70,24 @@ fn main() -> Result<(), std::io::Error> {
 
     // https://pinout.xyz/pinout/inky_phat
     // Configure Digital I/O Pins
-    let cs = Pin::new(8); // BCM8
+    let cs = Pin::new(cs_pin);
     cs.export().expect("cs export");
     while !cs.is_exported() {}
     cs.set_direction(Direction::Out).expect("CS Direction");
     cs.set_value(1).expect("CS Value set to 1");
 
-    let busy = Pin::new(17); // BCM17
+    let busy = Pin::new(busy_pin); 
     busy.export().expect("busy export");
     while !busy.is_exported() {}
     busy.set_direction(Direction::In).expect("busy Direction");
 
-    let dc = Pin::new(22); // BCM22
+    let dc = Pin::new(dc_pin);
     dc.export().expect("dc export");
     while !dc.is_exported() {}
     dc.set_direction(Direction::Out).expect("dc Direction");
     dc.set_value(1).expect("dc Value set to 1");
 
-    let reset = Pin::new(27); // BCM27
+    let reset = Pin::new(reset_pin);
     reset.export().expect("reset export");
     while !reset.is_exported() {}
     reset
