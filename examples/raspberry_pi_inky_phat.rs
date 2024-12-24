@@ -71,24 +71,28 @@ fn main() -> Result<(), std::io::Error> {
     // https://pinout.xyz/pinout/inky_phat
     // Configure Digital I/O Pins
     let cs = Pin::new(cs_pin);
-    cs.export().expect("cs export");
+    cs.export();
+    // .expect("cs export");
     while !cs.is_exported() {}
     cs.set_direction(Direction::Out).expect("CS Direction");
     cs.set_value(1).expect("CS Value set to 1");
 
     let busy = Pin::new(busy_pin); 
-    busy.export().expect("busy export");
+    busy.export();
+    // .expect("busy export");
     while !busy.is_exported() {}
     busy.set_direction(Direction::In).expect("busy Direction");
 
     let dc = Pin::new(dc_pin);
-    dc.export().expect("dc export");
+    dc.export();
+    // .expect("dc export");
     while !dc.is_exported() {}
     dc.set_direction(Direction::Out).expect("dc Direction");
     dc.set_value(1).expect("dc Value set to 1");
 
     let reset = Pin::new(reset_pin);
-    reset.export().expect("reset export");
+    reset.export();
+    // .expect("reset export");
     while !reset.is_exported() {}
     reset
         .set_direction(Direction::Out)
