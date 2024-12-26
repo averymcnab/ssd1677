@@ -81,11 +81,9 @@ pub trait DisplayInterface {
 /// let controller = ssd1675::Interface::new(spi, cs, busy, dc, reset);
 
 #[allow(dead_code)] // Prevent warning about CS being unused
-pub struct Interface<SPI, CS, BUSY, DC, RESET> {
+pub struct Interface<SPI, BUSY, DC, RESET> {
     /// SPI interface
     spi: SPI,
-    /// CS (chip select) for SPI (output)
-    cs: CS,
     /// Active low busy pin (input)
     busy: BUSY,
     /// Data/Command Control Pin (High for data, Low for command) (output)
@@ -94,19 +92,17 @@ pub struct Interface<SPI, CS, BUSY, DC, RESET> {
     reset: RESET,
 }
 
-impl<SPI, CS, BUSY, DC, RESET> Interface<SPI, CS, BUSY, DC, RESET>
+impl<SPI, BUSY, DC, RESET> Interface<SPI, BUSY, DC, RESET>
 where
     SPI: hal::blocking::spi::Write<u8>,
-    CS: hal::digital::v2::OutputPin,
     BUSY: hal::digital::v2::InputPin,
     DC: hal::digital::v2::OutputPin,
     RESET: hal::digital::v2::OutputPin,
 {
     /// Create a new Interface from embedded hal traits.
-    pub fn new(spi: SPI, cs: CS, busy: BUSY, dc: DC, reset: RESET) -> Self {
+    pub fn new(spi: SPI, busy: BUSY, dc: DC, reset: RESET) -> Self {
         Self {
             spi,
-            cs,
             busy,
             dc,
             reset,
@@ -114,9 +110,6 @@ where
     }
 
     fn write(&mut self, data: &[u8]) -> Result<(), SPI::Error> {
-        // Select the controller with chip select (CS)
-        // self.cs.set_low();
-
         // Linux has a default limit of 4096 bytes per SPI transfer
         // https://github.com/torvalds/linux/blob/ccda4af0f4b92f7b4c308d3acc262f4a7e3affad/drivers/spi/spidev.c#L93
         if cfg!(target_os = "linux") {
@@ -127,18 +120,13 @@ where
             self.spi.write(data)?;
         }
 
-        // Release the controller
-        // self.cs.set_high();
-
         Ok(())
     }
 }
 
-impl<SPI, CS, BUSY, DC, RESET> DisplayInterface for Interface<SPI, CS, BUSY, DC, RESET>
+impl<SPI, BUSY, DC, RESET> DisplayInterface for Interface<SPI, BUSY, DC, RESET>
 where
     SPI: hal::blocking::spi::Write<u8>,
-    CS: hal::digital::v2::OutputPin,
-    CS::Error: Debug,
     BUSY: hal::digital::v2::InputPin,
     DC: hal::digital::v2::OutputPin,
     DC::Error: Debug,
