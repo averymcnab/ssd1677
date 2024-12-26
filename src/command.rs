@@ -91,7 +91,7 @@ pub enum Command {
     /// Write to the temperature sensor register
     WriteTemperatureSensor(u16),
     /// Read from the temperature sensor register
-    ReadTemperatureSensor(u16),
+    ReadTemperatureSensor,
     /// Write a command to the external temperature sensor
     WriteExternalTemperatureSensor(u8, u8, u8),
     /// Activate display update sequence. BUSY will be high when in progress.
@@ -251,8 +251,9 @@ impl Command {
             // }
             // WriteTemperatureSensor(u16) => {
             // }
-            // ReadTemperatureSensor(u16) => {
-            // }
+            ReadTemperatureSensor => {
+                pack!(buf, 0x18, [0x80])
+            }
             // WriteExternalTemperatureSensor(u8, u8, u8) => {
             // }
             UpdateDisplay => pack!(buf, 0x20, []),
