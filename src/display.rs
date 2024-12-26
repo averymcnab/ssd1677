@@ -12,10 +12,6 @@ pub const MAX_GATE_OUTPUTS: u16 = 296;
 /// The maximum number of columns supported by the controller
 pub const MAX_SOURCE_OUTPUTS: u8 = 160;
 
-// Magic numbers from the data sheet
-const ANALOG_BLOCK_CONTROL_MAGIC: u8 = 0x54;
-const DIGITAL_BLOCK_CONTROL_MAGIC: u8 = 0x3B;
-
 /// Represents the dimensions of the display.
 pub struct Dimensions {
     /// The number of rows the display has.
@@ -85,14 +81,10 @@ where
     /// Initialise the controller according to Section 9: Typical Operating Sequence
     /// from the data sheet
     fn init(&mut self) -> Result<(), I::Error> {
-        Command::AnalogBlockControl(ANALOG_BLOCK_CONTROL_MAGIC).execute(&mut self.interface)?;
-        Command::DigitalBlockControl(DIGITAL_BLOCK_CONTROL_MAGIC).execute(&mut self.interface)?;
-
         Command::DriverOutputControl(self.config.dimensions.rows, 0x00)
             .execute(&mut self.interface)?;
 
         self.config.dummy_line_period.execute(&mut self.interface)?;
-        self.config.gate_line_width.execute(&mut self.interface)?;
 
         // Command::GateDrivingVoltage(0b10000 | 0b0001);
         // Command::SourceDrivingVoltage(0x2D, 0xB2, 0x22).execute(&mut self.interface)?;

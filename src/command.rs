@@ -73,8 +73,6 @@ pub enum Command {
     /// 2: Soft start setting for phase 3
     /// 3: Duration setting
     BoosterEnable(u8, u8, u8, u8),
-    /// Set the scanning start position of the gate driver
-    GateScanStartPostion(u16),
     /// Set deep sleep mode
     DeepSleepMode(DeepSleepMode),
     /// Set the data entry mode and increament axis
@@ -128,8 +126,6 @@ pub enum Command {
     // OTPProgramMode,
     /// Set the number of dummy line period in terms of gate line width (TGate)
     DummyLinePeriod(u8),
-    /// Set the gate line width (TGate)
-    GateLineWidth(u8),
     /// Select border waveform for VBD
     BorderWaveform(u8),
     // ReadRamOption,
@@ -149,10 +145,6 @@ pub enum Command {
     XAddress(u8),
     /// Set RAM Y address
     YAddress(u8),
-    /// Set analog block control
-    AnalogBlockControl(u8),
-    /// Set digital block control
-    DigitalBlockControl(u8),
     // Used to terminate frame memory reads
     // Nop,
 }
@@ -231,12 +223,6 @@ impl Command {
             BoosterEnable(phase1, phase2, phase3, duration) => {
                 pack!(buf, 0x0C, [phase1, phase2, phase3, duration, 0x00])
             }
-            // not in 1677 command table
-            GateScanStartPostion(position) => {
-                debug_assert!(Contains::contains(&(0..MAX_GATES), position));
-                let [upper, lower] = position.to_be_bytes();
-                pack!(buf, 0x0F, [lower, upper])
-            }
             DeepSleepMode(mode) => {
                 let mode = match mode {
                     self::DeepSleepMode::Normal => 0b00,
@@ -283,8 +269,6 @@ impl Command {
                 debug_assert!(Contains::contains(&(0..=MAX_DUMMY_LINE_PERIOD), period));
                 pack!(buf, 0x3A, [period])
             }
-            // reserved in 1677
-            GateLineWidth(tgate) => pack!(buf, 0x3B, [tgate]),
             BorderWaveform(border_waveform) => pack!(buf, 0x3C, [border_waveform]),
             StartEndXPosition(start, end) => pack!(buf, 0x44, [start, 0x00, end, 0x00]),
             StartEndYPosition(start, end) => {
@@ -298,10 +282,6 @@ impl Command {
             // }
             XAddress(address) => pack!(buf, 0x4E, [address, 0x00]),
             YAddress(address) => pack!(buf, 0x4F, [address, 0x00]),
-            // not in 1677 command table
-            AnalogBlockControl(value) => pack!(buf, 0x74, [value]),
-            // not in 1677 command table
-            DigitalBlockControl(value) => pack!(buf, 0x7E, [value]),
             _ => unimplemented!(),
         };
 

@@ -22,7 +22,6 @@ use display::{self, Dimensions, Rotation};
 /// ```
 pub struct Builder<'a> {
     dummy_line_period: Command,
-    gate_line_width: Command,
     write_vcom: Command,
     write_lut: Option<BufCommand<'a>>,
     data_entry_mode: Command,
@@ -41,7 +40,6 @@ pub struct BuilderError {}
 /// Passed to Display::new. Use `Builder` to construct a `Config`.
 pub struct Config<'a> {
     pub(crate) dummy_line_period: Command,
-    pub(crate) gate_line_width: Command,
     pub(crate) write_vcom: Command,
     pub(crate) write_lut: Option<BufCommand<'a>>,
     pub(crate) data_entry_mode: Command,
@@ -53,7 +51,6 @@ impl<'a> Default for Builder<'a> {
     fn default() -> Self {
         Builder {
             dummy_line_period: Command::DummyLinePeriod(0x07),
-            gate_line_width: Command::GateLineWidth(0x04),
             write_vcom: Command::WriteVCOM(0x3C),
             write_lut: None,
             data_entry_mode: Command::DataEntryMode(
@@ -78,16 +75,6 @@ impl<'a> Builder<'a> {
     pub fn dummy_line_period(self, dummy_line_period: u8) -> Self {
         Self {
             dummy_line_period: Command::DummyLinePeriod(dummy_line_period),
-            ..self
-        }
-    }
-
-    /// Set the gate line width (TGate).
-    ///
-    /// Defaults to 0x04. Corresponds to command 0x3B.
-    pub fn gate_line_width(self, gate_line_width: u8) -> Self {
-        Self {
-            gate_line_width: Command::GateLineWidth(gate_line_width),
             ..self
         }
     }
@@ -169,7 +156,6 @@ impl<'a> Builder<'a> {
     pub fn build(self) -> Result<Config<'a>, BuilderError> {
         Ok(Config {
             dummy_line_period: self.dummy_line_period,
-            gate_line_width: self.gate_line_width,
             write_vcom: self.write_vcom,
             write_lut: self.write_lut,
             data_entry_mode: self.data_entry_mode,
