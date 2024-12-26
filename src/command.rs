@@ -72,7 +72,7 @@ pub enum Command {
     /// 1: Soft start setting for phase 2
     /// 2: Soft start setting for phase 3
     /// 3: Duration setting
-    BoosterEnable(u8, u8, u8, u8),
+    BoosterEnable(u8, u8, u8, u8, u8),
     /// Set deep sleep mode
     DeepSleepMode(DeepSleepMode),
     /// Set the data entry mode and increament axis
@@ -220,8 +220,8 @@ impl Command {
             }
             GateDrivingVoltage(voltages) => pack!(buf, 0x03, [voltages]),
             SourceDrivingVoltage(vsh1, vsh2, vsl) => pack!(buf, 0x04, [vsh1, vsh2, vsl]),
-            BoosterEnable(phase1, phase2, phase3, duration) => {
-                pack!(buf, 0x0C, [phase1, phase2, phase3, duration, 0x00])
+            BoosterEnable(phase1, phase2, phase3, duration, godknows) => {
+                pack!(buf, 0x0C, [phase1, phase2, phase3, duration, godknows])
             }
             DeepSleepMode(mode) => {
                 let mode = match mode {
