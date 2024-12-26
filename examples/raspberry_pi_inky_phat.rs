@@ -30,10 +30,12 @@ use std::{fs, io};
 const ROWS: u16 = 212;
 const COLS: u8 = 104;
 
-const busy_pin: u64 = 0;
-const reset_pin: u64 = 1;
-const dc_pin: u64 = 2;
-const cs_pin: u64 = 3;
+const offset: u64 = 512;
+
+const busy_pin: u64 = 18;
+const reset_pin: u64 = 17;
+const dc_pin: u64 = 25;
+const cs_pin: u64 = 8;
 
 const spi_port: &str = "/dev/spidev0.0";
 
@@ -68,29 +70,30 @@ fn main() -> Result<(), std::io::Error> {
         .build();
     spi.configure(&options).expect("SPI configuration");
 
+// we're not setting a cs pin here, instead we expect the spi driver to hold CS high for us
     // https://pinout.xyz/pinout/inky_phat
     // Configure Digital I/O Pins
-    let cs = Pin::new(cs_pin);
-    cs.export();
-    // .expect("cs export");
-    while !cs.is_exported() {}
-    cs.set_direction(Direction::Out).expect("CS Direction");
-    cs.set_value(1).expect("CS Value set to 1");
+//    let cs = Pin::new(offset + cs_pin);
+//    cs.export().expect("cs export");
 
-    let busy = Pin::new(busy_pin); 
+//    while !cs.is_exported() {}
+//    cs.set_direction(Direction::Out).expect("CS Direction");
+//    cs.set_value(1).expect("CS Value set to 1");
+
+    let busy = Pin::new(offset + busy_pin); 
     busy.export();
     // .expect("busy export");
     while !busy.is_exported() {}
     busy.set_direction(Direction::In).expect("busy Direction");
 
-    let dc = Pin::new(dc_pin);
+    let dc = Pin::new(offset + dc_pin);
     dc.export();
     // .expect("dc export");
     while !dc.is_exported() {}
     dc.set_direction(Direction::Out).expect("dc Direction");
     dc.set_value(1).expect("dc Value set to 1");
 
-    let reset = Pin::new(reset_pin);
+    let reset = Pin::new(offset + reset_pin);
     reset.export();
     // .expect("reset export");
     while !reset.is_exported() {}
