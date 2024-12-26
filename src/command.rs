@@ -271,7 +271,8 @@ impl Command {
                 pack!(buf, 0x3A, [period])
             }
             BorderWaveform(border_waveform) => pack!(buf, 0x3C, [border_waveform]),
-            StartEndXPosition(start, end) => pack!(buf, 0x44, [start, 0x00, end, 0x00]),
+            // todo need to come back and 'fluff up' the padding
+            StartEndXPosition(start, end) => pack!(buf, 0x44, [250, 0x00, 160, 0x00]),
             StartEndYPosition(start, end) => {
                 let [start_upper, start_lower] = start.to_be_bytes();
                 let [end_upper, end_lower] = end.to_be_bytes();
