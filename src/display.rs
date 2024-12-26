@@ -128,8 +128,6 @@ where
         BufCommand::WriteBlackData(&black[..buf_limit]).execute(&mut self.interface)?;
 
         // Write the Red RAM
-        Command::XAddress(0).execute(&mut self.interface)?;
-        Command::YAddress(0).execute(&mut self.interface)?;
         BufCommand::WriteRedData(&red[..buf_limit]).execute(&mut self.interface)?;
 
         // Kick off the display update
