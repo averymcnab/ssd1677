@@ -134,7 +134,8 @@ where
         Command::BoosterEnable(0xae, 0xc7, 0xc3, 0xc0, 0x80).execute(&mut self.interface)?;
 
         // Kick off the display update
-        Command::UpdateDisplayOption2(0xC7).execute(&mut self.interface)?;
+        // XXX: this was 0xC7, 0xff is from the stm32 demo
+        Command::UpdateDisplayOption2(0xff).execute(&mut self.interface)?;
         Command::UpdateDisplay.execute(&mut self.interface)?;
         delay.delay_ms(50);
         // TODO: We don't really need to wait here... the program can go off and do other things
