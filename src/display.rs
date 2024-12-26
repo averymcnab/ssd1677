@@ -81,6 +81,7 @@ where
     /// Initialise the controller according to Section 9: Typical Operating Sequence
     /// from the data sheet
     fn init(&mut self) -> Result<(), I::Error> {
+        Command::AutoWriteRedPattern.execute(&mut self.interface)?;
         Command::DriverOutputControl(self.config.dimensions.rows, 0x00)
             .execute(&mut self.interface)?;
 

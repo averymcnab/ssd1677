@@ -138,7 +138,7 @@ pub enum Command {
     /// 1: End
     StartEndYPosition(u16, u16),
     /// Auto write red RAM for regular pattern
-    AutoWriteRedPattern(u8),
+    AutoWriteRedPattern,
     /// Auto write red RAM for regular pattern
     AutoWriteBlackPattern(u8),
     /// Set RAM X address
@@ -276,8 +276,9 @@ impl Command {
                 let [end_upper, end_lower] = end.to_be_bytes();
                 pack!(buf, 0x45, [start_lower, start_upper, end_lower, end_upper])
             }
-            // AutoWriteRedPattern(u8) => {
-            // }
+            AutoWriteRedPattern => {
+                pack!(buf, 0x46, [0xF7])
+            }
             // AutoWriteBlackPattern(u8) => {
             // }
             XAddress(address) => pack!(buf, 0x4E, [address, 0x00]),
