@@ -8,9 +8,9 @@ use interface::DisplayInterface;
 
 // Max display resolution is 680x960
 /// The maximum number of rows supported by the controller
-pub const MAX_GATE_OUTPUTS: u16 = 250;
+pub const MAX_GATE_OUTPUTS: u16 = 680;
 /// The maximum number of columns supported by the controller
-pub const MAX_SOURCE_OUTPUTS: u16 = 160;
+pub const MAX_SOURCE_OUTPUTS: u16 = 960;
 
 /// Represents the dimensions of the display.
 pub struct Dimensions {

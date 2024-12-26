@@ -27,8 +27,8 @@ use std::{fs, io};
 // permission problems and follow-up timing problems
 // see https://github.com/rust-embedded/rust-sysfs-gpio/issues/5 and follow-up issues
 
-const ROWS: u16 = 680;
-const COLS: u16 = 960;
+const ROWS: u16 = 250;
+const COLS: u16 = 160;
 
 const offset: u64 = 512;
 
