@@ -205,6 +205,14 @@ macro_rules! pack {
         $buf[3] = $arg3;
         ($cmd, &$buf[..4])
     }};
+        ($buf:ident, $cmd:expr,[$arg0:expr, $arg1:expr, $arg2:expr, $arg3:expr, $arg4:expr]) => {{
+        $buf[0] = $arg0;
+        $buf[1] = $arg1;
+        $buf[2] = $arg2;
+        $buf[3] = $arg3;
+        $buf[4] = $arg4;
+        ($cmd, &$buf[..5])
+    }};
 }
 
 impl Command {
@@ -212,7 +220,7 @@ impl Command {
     pub fn execute<I: DisplayInterface>(&self, interface: &mut I) -> Result<(), I::Error> {
         use self::Command::*;
 
-        let mut buf = [0u8; 4];
+        let mut buf = [0u8; 5];
         let (command, data) = match *self {
             DriverOutputControl(gate_lines, scanning_seq_and_dir) => {
                 let [upper, lower] = gate_lines.to_be_bytes();
@@ -221,8 +229,9 @@ impl Command {
             GateDrivingVoltage(voltages) => pack!(buf, 0x03, [voltages]),
             SourceDrivingVoltage(vsh1, vsh2, vsl) => pack!(buf, 0x04, [vsh1, vsh2, vsl]),
             BoosterEnable(phase1, phase2, phase3, duration) => {
-                pack!(buf, 0x0C, [phase1, phase2, phase3, duration])
+                pack!(buf, 0x0C, [phase1, phase2, phase3, duration, 0x00])
             }
+            // not in 1677 command table
             GateScanStartPostion(position) => {
                 debug_assert!(Contains::contains(&(0..MAX_GATES), position));
                 let [upper, lower] = position.to_be_bytes();
@@ -269,13 +278,15 @@ impl Command {
             // VCOMSenseDuration(u8) => {
             // }
             WriteVCOM(value) => pack!(buf, 0x2C, [value]),
+            // reserved in 1677
             DummyLinePeriod(period) => {
                 debug_assert!(Contains::contains(&(0..=MAX_DUMMY_LINE_PERIOD), period));
                 pack!(buf, 0x3A, [period])
             }
+            // reserved in 1677
             GateLineWidth(tgate) => pack!(buf, 0x3B, [tgate]),
             BorderWaveform(border_waveform) => pack!(buf, 0x3C, [border_waveform]),
-            StartEndXPosition(start, end) => pack!(buf, 0x44, [start, end]),
+            StartEndXPosition(start, end) => pack!(buf, 0x44, [start, 0x00, end, 0x00]),
             StartEndYPosition(start, end) => {
                 let [start_upper, start_lower] = start.to_be_bytes();
                 let [end_upper, end_lower] = end.to_be_bytes();
@@ -285,9 +296,11 @@ impl Command {
             // }
             // AutoWriteBlackPattern(u8) => {
             // }
-            XAddress(address) => pack!(buf, 0x4E, [address]),
-            YAddress(address) => pack!(buf, 0x4F, [address]),
+            XAddress(address) => pack!(buf, 0x4E, [address, 0x00]),
+            YAddress(address) => pack!(buf, 0x4F, [address, 0x00]),
+            // not in 1677 command table
             AnalogBlockControl(value) => pack!(buf, 0x74, [value]),
+            // not in 1677 command table
             DigitalBlockControl(value) => pack!(buf, 0x7E, [value]),
             _ => unimplemented!(),
         };
