@@ -6,11 +6,11 @@ use command::{BufCommand, Command, DeepSleepMode};
 use config::Config;
 use interface::DisplayInterface;
 
-// Max display resolution is 160x296
+// Max display resolution is 680x960
 /// The maximum number of rows supported by the controller
-pub const MAX_GATE_OUTPUTS: u16 = 296;
+pub const MAX_GATE_OUTPUTS: u16 = 250;
 /// The maximum number of columns supported by the controller
-pub const MAX_SOURCE_OUTPUTS: u8 = 160;
+pub const MAX_SOURCE_OUTPUTS: u16 = 160;
 
 /// Represents the dimensions of the display.
 pub struct Dimensions {
@@ -21,7 +21,7 @@ pub struct Dimensions {
     /// The number of columns the display has.
     ///
     /// Must be less than or equal to MAX_SOURCE_OUTPUTS.
-    pub cols: u8,
+    pub cols: u16,
 }
 
 /// Represents the physical rotation of the display relative to the native orientation.
@@ -161,7 +161,7 @@ where
     }
 
     /// Returns the number of columns the display has.
-    pub fn cols(&self) -> u8 {
+    pub fn cols(&self) -> u16 {
         self.config.dimensions.cols
     }
 

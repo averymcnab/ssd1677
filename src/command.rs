@@ -132,7 +132,7 @@ pub enum Command {
     /// Set the start/end positions of the window address in the X direction
     /// 0: Start
     /// 1: End
-    StartEndXPosition(u8, u8),
+    StartEndXPosition(u16, u16),
     /// Set the start/end positions of the window address in the Y direction
     /// 0: Start
     /// 1: End
