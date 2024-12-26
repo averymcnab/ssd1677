@@ -127,7 +127,7 @@ fn main() -> Result<(), std::io::Error> {
     loop {
         display.reset(&mut delay).expect("error resetting display");
         println!("Reset and initialised");
-        let one_minute = Duration::from_secs(60);
+        let one_minute = Duration::from_secs(10);
 
         display.clear(Color::White);
         println!("Clear");
