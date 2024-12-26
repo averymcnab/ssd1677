@@ -130,6 +130,9 @@ where
         // Write the Red RAM
         BufCommand::WriteRedData(&red[..buf_limit]).execute(&mut self.interface)?;
 
+        // need to find out correct values here
+        Command::BoosterEnable(0, 0, 0, 0).execute(&mut self.interface)?;
+
         // Kick off the display update
         Command::UpdateDisplayOption2(0xC7).execute(&mut self.interface)?;
         Command::UpdateDisplay.execute(&mut self.interface)?;
