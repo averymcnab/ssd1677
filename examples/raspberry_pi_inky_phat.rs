@@ -116,7 +116,7 @@ fn main() -> Result<(), std::io::Error> {
             cols: COLS,
         })
         .rotation(Rotation::Rotate270)
-        .lut(&LUT)
+        // .lut(&LUT)
         .build()
         .expect("invalid configuration");
     let display = Display::new(controller, config);
