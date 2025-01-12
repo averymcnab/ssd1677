@@ -105,7 +105,7 @@ where
         Command::StartEndXPosition(0, end).execute(&mut self.interface)?;
         Command::StartEndYPosition(0, self.config.dimensions.rows).execute(&mut self.interface)?;
 
-        Command::BorderWaveform(0x80).execute(&mut self.interface)?;
+        Command::BorderWaveform(0x1).execute(&mut self.interface)?;
         Command::ReadTemperatureSensor.execute(&mut self.interface)?;
 
         Ok(())
